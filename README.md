@@ -1,7 +1,30 @@
 HtmlToJson
 =========
+This little snippet will try its best to convert DOM-compatible source to JSON format.
 
-This little snippet will try its best to convert DOM-compatible file to JSON format.
+
+NOTE
+-------------
+This project is still under development. I haven't done extensive testing yet.
+**There are possibly many corner cases unhandled!**
+
+Demo program (Jsoup.parse)
+----
+```java
+    public static void main(String[] args) throws IOException {
+            String html = new String(
+				            Files.readAllBytes(Paths.get("index.html")),
+				            StandardCharsets.UTF_8
+					      );
+					      
+            String json = new HtmlToJson(Jsoup.parse(html))
+				            .transform()
+				            .asFormattedJsonString();
+            
+            System.out.println(json);
+    }
+```
+
 
 Input (HTML):
 -------
@@ -89,10 +112,3 @@ Output (JSON):
 ```
 
 ----------
-
-
-NOTE
--------------
-
-This project is still under development. I haven't done extensive testing yet.
-**There are possibly many corner cases unhandled!**
