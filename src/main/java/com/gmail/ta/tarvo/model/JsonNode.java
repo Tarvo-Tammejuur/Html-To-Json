@@ -1,6 +1,5 @@
 package com.gmail.ta.tarvo.model;
 
-import com.google.gson.JsonObject;
 import lombok.Data;
 
 import java.util.List;
@@ -12,14 +11,14 @@ import java.util.List;
 public class JsonNode {
     private String element;
     private String content;
-    private JsonObject attributes;
+    private JsonNodeAttribute attributes;
     private List<JsonNode> children;
 
     @Override
     public String toString() {
         return element + "{" +
-                "txt='" + content + '\'' +
-                ", attrs=" + attributes +
+                "content='" + content + '\'' +
+                ", attributes=" + attributes +
                 ", children=" + children +
                 '}';
     }

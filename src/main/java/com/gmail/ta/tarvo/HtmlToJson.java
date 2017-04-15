@@ -42,7 +42,7 @@ public class HtmlToJson {
         this.doc = Jsoup.parse(html);
     }
 
-    /**git c
+    /**
      * Initialises the Document for transformation
      *
      * @param url web page
@@ -86,8 +86,9 @@ public class HtmlToJson {
      * @return JsonNode object for easier json navigation
      */
     public static JsonNode asJsonNode(JsonObject jsonObj) {
-        JsonNode asJsonNode = new Gson().fromJson(jsonObj, JsonNode.class); // map it to JsonNode
-        return asJsonNode;
+        GsonBuilder gb = new GsonBuilder();
+        Gson gson = gb.create();
+        return gson.fromJson(jsonObj, JsonNode.class); // map it to JsonNode
     }
 
     /**
@@ -99,8 +100,6 @@ public class HtmlToJson {
         JsonObject root = new JsonObject();
         Element rootElem = doc.child(0);
         root.addProperty("element", rootElem.tagName());
-        root.addProperty("content", rootElem.ownText());
-        root.add("attributes", getAttributesForElementAsJson(rootElem));
         root.add("children", new JsonArray());
 
         traverseAllChildren(root, rootElem);
@@ -116,17 +115,25 @@ public class HtmlToJson {
     private void traverseAllChildren(JsonObject jsonParent, Element elem) {
         for (Element e : elem.children()) {
             JsonObject jsonChild = new JsonObject();
-            JsonObject elemAttrs = getAttributesForElementAsJson(e);
 
             jsonChild.addProperty("element", e.tagName());
-            jsonChild.addProperty("content", e.ownText());
-            jsonChild.add("attributes", elemAttrs);
+
+            if(!e.ownText().equals("")) {
+                jsonChild.addProperty("content", e.ownText());
+            }
+            if (e.attributes().asList().size() > 0) {
+                JsonObject elemAttrs = getAttributesForElementAsJson(e);
+                jsonChild.add("attributes", elemAttrs);
+            }
+
             jsonChild.add("children", new JsonArray());
 
             jsonParent.getAsJsonArray("children").add(jsonChild);
 
             if (e.children().size() > 0) {
                 traverseAllChildren(jsonChild, e); //param 'jsonChild' as new parent
+            } else {
+                jsonChild.remove("children");
             }
         }
     }
